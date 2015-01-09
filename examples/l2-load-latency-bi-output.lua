@@ -115,13 +115,13 @@ function trafficSlave(port, txQueueCount, testNumber)
 		if elapsed > 1 then
 			--Sent
 			local mpps = (totalSent - lastTotal) / elapsed / 10^6
-			--printf("IF %d: Sent %d packets, current rate %.2f Mpps, %.2f MBit/s, %.2f MBit/s wire rate", port, totalSent, mpps, mpps * 64 * 8, mpps * 84 * 8)
+			printf("IF %d: Sent %d packets, current rate %.2f Mpps, %.2f MBit/s, %.2f MBit/s wire rate", port, totalSent, mpps, mpps * 64 * 8, mpps * 84 * 8)
 			avgSentRate = avgSentRate + mpps
 			lastTotal = totalSent
 			--Received
 			local pkts = dev:getRxStats(port)
 			totalRecv = totalRecv + pkts
-			--printf("IF %d: Received %d packets, current rate %.2f Mpps", port, totalRecv, pkts / elapsed / 10^6)
+			printf("IF %d: Received %d packets, current rate %.2f Mpps", port, totalRecv, pkts / elapsed / 10^6)
 			avgRecvRate = avgRecvRate + (pkts / elapsed / 10^6)
 			lastPrint = time
 			
@@ -193,8 +193,8 @@ function timerSlave(txPort, rxPort, txQueue, rxQueue, testNumber)
 		--printing
 		local time = dpdk.getTime()
 		if (time - lastTime) > 1 then
-			--printf("timerSlave sent %d packets", all_tx or 0)
-			--printf("timerSlave received %d packets", all_rx or 0)
+			printf("timerSlave sent %d packets", all_tx or 0)
+			printf("timerSlave received %d packets", all_rx or 0)
 			lastTime = time
 		end
 	end
@@ -206,13 +206,13 @@ function timerSlave(txPort, rxPort, txQueue, rxQueue, testNumber)
 	local sum = 0
 	local samples = 0
 	table.sort(sortedHist, function(e1, e2) return e1.k < e2.k end)
-	print("Latencys:")
+	--print("Latencys:")
 	for _, v in ipairs(sortedHist) do
 		sum = sum + v.k * v.v
 		samples = samples + v.v
-		print(v.k .. ";" .. v.v .. "\r\n")
-		
+		--print(v.k .. ";" .. v.v .. "\r\n")
 	end
+	print("Average: " .. (sum / samples) .. " ns, " .. samples .. " samples")
 	
 	io.stdout:flush()
 end
